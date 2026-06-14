@@ -1,10 +1,18 @@
+<<<<<<< HEAD
 # 📚 Pustaka Hangat Digital (Boutique Library App)
+=======
+# 📚 Perpustakaan Digital (Boutique Library App)
+>>>>>>> bd8a8c2639b82c108bbd313330bd9084ca477488
 
 Sistem Informasi Perpustakaan Digital modern yang mengusung tema **Warm-Elegant** (elegan & hangat). Proyek ini dirancang untuk memberikan pengalaman membaca premium layaknya berada di butik eksklusif, serta menyediakan *Dashboard Admin* yang komprehensif bagi pengelola perpustakaan.
 
 ## ✨ Fitur Utama
 
+<<<<<<< HEAD
 ### 🧑‍💻 Halaman Publik & Anggota (User/Member)
+=======
+### 🌐 Halaman Publik & Anggota (User/Member)
+>>>>>>> bd8a8c2639b82c108bbd313330bd9084ca477488
 - **Desain Butik Elegan**: Antarmuka modern dengan skema warna merah bata (*Terracotta*) dan krem hangat (*Warm Beige*).
 - **Katalog Buku Responsif**: Pencarian dan penyaringan (*filter*) buku dengan tampilan kartu yang dinamis (termasuk efek *hover*, rating, dan *glassmorphism*).
 - **Perpustakaan Pribadi (My Library)**: Navigasi lengkap menuju Buku Sedang Dibaca, Selesai Dibaca, Daftar Keinginan (*Wishlist*), dan Favorit.
@@ -62,12 +70,8 @@ Pastikan Anda sudah menginstal **Node.js** di komputer Anda. Ikuti langkah-langk
 * **Halaman Utama (Landing Page)**:
   
   ![Landing Page](frontend/src/assets/landing-page.png)
-
 * **Dashboard Admin**:
-  
   ![Admin Dashboard](frontend/src/assets/admin-panel.png)
-
----
 
 ## 📝 Status Pengembangan
 - [x] **Fase 1: Desain Frontend UI/UX (Selesai)**
