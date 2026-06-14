@@ -59,10 +59,13 @@ Pastikan Anda sudah menginstal **Node.js** di komputer Anda. Ikuti langkah-langk
 
 ## 🎨 Cuplikan Tampilan (Screenshots)
 
-*(Silakan tambahkan tangkapan layar / *screenshot* proyek Anda di sini agar terlihat menarik bagi pengunjung Repository)*
+* **Halaman Utama (Landing Page)**:
+  
+  ![Landing Page](frontend/src/assets/landing-page.png)
 
-* **Halaman Utama (Landing Page)**: `![Landing Page](./path-to-image.png)`
-* **Dashboard Admin**: `![Admin Dashboard](./path-to-image.png)`
+* **Dashboard Admin**:
+  
+  ![Admin Dashboard](frontend/src/assets/admin-panel.png)
 
 ---
 
