@@ -19,7 +19,9 @@ Sistem Informasi Perpustakaan Digital modern yang mengusung tema **Warm-Elegant*
 
 ## 🛠️ Tech Stack (Teknologi yang Digunakan)
 
-Proyek ini (saat ini berfokus pada Frontend) dibangun menggunakan ekosistem modern:
+Proyek ini menggunakan arsitektur modern (Frontend + Backend terpisah):
+
+### Frontend (User Interface)
 - **[React 18](https://react.dev/)**: Library UI utama (menggunakan Hooks modern).
 - **[TypeScript](https://www.typescriptlang.org/)**: Static typing untuk kode yang lebih aman dan mudah di-maintain.
 - **[Tailwind CSS v4](https://tailwindcss.com/)**: Utility-first CSS untuk styling (*custom dark mode*, *custom variants*, desain responsif).
@@ -28,32 +30,50 @@ Proyek ini (saat ini berfokus pada Frontend) dibangun menggunakan ekosistem mode
 - **[Lucide React](https://lucide.dev/)**: Ikon SVG yang cantik dan konsisten.
 - **[Recharts](https://recharts.org/)**: Rendering grafik (Charts) statistik interaktif di sisi admin.
 
+### Backend (API Server)
+- **[Laravel 12.x](https://laravel.com/)**: Framework PHP modern dan tangguh.
+- **[PostgreSQL](https://www.postgresql.org/)**: Relational database utama untuk stabilitas.
+- **[Laravel Sanctum](https://laravel.com/docs/sanctum)**: Sistem autentikasi SPA stateful yang aman.
+- **RESTful API**: ~50+ endpoint API untuk mengelola perpustakaan.
+
 ## 🚀 Cara Menjalankan Secara Lokal (Local Development)
 
-Pastikan Anda sudah menginstal **Node.js** di komputer Anda. Ikuti langkah-langkah berikut untuk menjalankan proyek ini:
+Pastikan Anda sudah menginstal **Node.js**, **PHP 8.3+**, **Composer**, dan **PostgreSQL** di komputer Anda. Ikuti langkah-langkah berikut:
 
 1. **Kloning (Clone) Repository**
    ```bash
-   git clone https://github.com/USERNAME_ANDA/NAMA_REPO_ANDA.git
-   cd NAMA_REPO_ANDA
+   git clone https://github.com/adrianfahrezi404/perpustakaan-digital.git
+   cd perpustakaan-digital
    ```
 
-2. **Masuk ke folder Frontend**
+2. **Setup Database (PostgreSQL)**
+   ```bash
+   sudo systemctl start postgresql
+   sudo -u postgres psql -c "CREATE DATABASE perpustakaan_digital;"
+   sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'password';"
+   ```
+
+3. **Jalankan Backend (Laravel)**
+   Buka terminal baru:
+   ```bash
+   cd backend
+   composer install
+   cp .env.example .env
+   php artisan key:generate
+   php artisan storage:link
+   php artisan migrate:fresh --seed
+   php artisan serve
+   ```
+   *Server berjalan di `http://127.0.0.1:8000`*
+
+4. **Jalankan Frontend (React/Vite)**
+   Buka terminal baru:
    ```bash
    cd frontend
-   ```
-
-3. **Instal Dependensi**
-   ```bash
    npm install
-   ```
-
-4. **Jalankan Server Development**
-   ```bash
    npm run dev
    ```
-
-5. Buka tautan lokal Anda (biasanya `http://localhost:5173`) di peramban web (*browser*).
+   *Aplikasi dapat diakses di `http://localhost:5173`*
 
 ---
 
@@ -62,15 +82,16 @@ Pastikan Anda sudah menginstal **Node.js** di komputer Anda. Ikuti langkah-langk
 **Halaman Utama (Landing Page)**:
   
   ![Landing Page](frontend/src/assets/landing-page.png)
-  
+
 **Dashboard Admin**:
 
   ![Admin Dashboard](frontend/src/assets/admin-panel.png)
 
 ## 📝 Status Pengembangan
 - [x] **Fase 1: Desain Frontend UI/UX (Selesai)**
-- [ ] **Fase 2: Integrasi Backend API (Dalam Perencanaan)**
-- [ ] **Fase 3: Autentikasi Keamanan (Dalam Perencanaan)**
+- [x] **Fase 2: Pembuatan Backend & REST API (Selesai)**
+- [x] **Fase 3: Autentikasi Keamanan & Integrasi API (Selesai)**
+- [ ] **Fase 4: Integrasi Halaman Frontend dengan Backend API (In Progress)**
 
 <br/>
 <div align="center">
