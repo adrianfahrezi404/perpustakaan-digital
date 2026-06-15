@@ -1,21 +1,36 @@
 import { Link } from 'react-router-dom';
 import { ChevronRight, ChevronLeft, Star, BookOpen, Microscope, Building, User } from 'lucide-react';
-
-const popularBooks = [
-  { id: 1, title: 'Atomic Habits', author: 'James Clear', rating: 4.8, cover: 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&q=80&w=400&h=600' },
-  { id: 2, title: 'Laskar Pelangi', author: 'Andrea Hirata', rating: 4.9, cover: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=400&h=600' },
-  { id: 3, title: 'Dune', author: 'Frank Herbert', rating: 4.7, cover: 'https://images.unsplash.com/photo-1614544048536-0d28caf77f41?auto=format&fit=crop&q=80&w=400&h=600' },
-  { id: 4, title: 'The Midnight Library', author: 'Matt Haig', rating: 4.6, cover: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=400&h=600' },
-];
-
-const categories = [
-  { id: 1, name: 'Fiksi', icon: <BookOpen className="w-8 h-8 text-[#9a503e]" /> },
-  { id: 2, name: 'Sains', icon: <Microscope className="w-8 h-8 text-[#9a503e]" /> },
-  { id: 3, name: 'Sejarah', icon: <Building className="w-8 h-8 text-[#9a503e]" /> },
-  { id: 4, name: 'Biografi', icon: <User className="w-8 h-8 text-[#9a503e]" /> },
-];
+import { useState, useEffect } from 'react';
+import api from '../lib/api';
+import type { Book, Category } from '../lib/types';
 
 export default function Landing() {
+  const [popularBooks, setPopularBooks] = useState<Book[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [booksRes, catsRes] = await Promise.all([
+          api.get('/books/popular'),
+          api.get('/categories')
+        ]);
+        setPopularBooks(booksRes.data.data);
+        setCategories(catsRes.data.data);
+      } catch (error) {
+        console.error('Error fetching landing data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center">Memuat data...</div>;
+  }
+
   return (
     <div className="flex flex-col gap-16 pb-16">
       {/* Hero Section */}
@@ -58,7 +73,7 @@ export default function Landing() {
             <Link key={book.id} to={`/book/${book.id}`} className="group">
               <div className="glass-card rounded-2xl p-4 transition-transform duration-300 group-hover:-translate-y-2">
                 <div className="aspect-[2/3] rounded-xl overflow-hidden mb-4 relative">
-                  <img src={book.cover} alt={book.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                  <img src={book.cover_url || 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=400&h=600'} alt={book.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                     <span className="text-white font-medium bg-primary/80 px-4 py-2 rounded-full backdrop-blur-sm">Lihat Detail</span>
                   </div>
@@ -82,7 +97,11 @@ export default function Landing() {
           {categories.map(category => (
             <Link key={category.id} to={`/catalog?category=${category.name}`} className="glass-card rounded-2xl p-6 flex flex-col items-center justify-center gap-4 hover:bg-[#9a503e]/10 transition-colors group border border-[#e8dac5] dark:border-white/10">
               <div className="p-4 bg-white dark:bg-white/5 rounded-full shadow-sm group-hover:scale-110 transition-transform duration-300">
-                {category.icon}
+                {category.icon === 'book' ? <BookOpen className="w-8 h-8 text-[#9a503e]" /> : 
+                 category.icon === 'microscope' ? <Microscope className="w-8 h-8 text-[#9a503e]" /> :
+                 category.icon === 'building' ? <Building className="w-8 h-8 text-[#9a503e]" /> :
+                 category.icon === 'user' ? <User className="w-8 h-8 text-[#9a503e]" /> :
+                 <BookOpen className="w-8 h-8 text-[#9a503e]" />}
               </div>
               <span className="font-medium text-lg text-[#1a1a1a] dark:text-white">{category.name}</span>
             </Link>

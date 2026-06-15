@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChevronDown, Edit, Trash2, Plus, CheckCircle, AlertTriangle, X } from 'lucide-react';
+import { ChevronDown, Edit, Trash2, Plus, CheckCircle, AlertTriangle } from 'lucide-react';
 
 const initialBooks = [
   { id: 1, title: 'Laskar Pelangi', author: 'Andrea Hirata', isbn: '978-979-3062-79-2', category: 'Fiksi', stock: 15, cover: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=150&h=200' },

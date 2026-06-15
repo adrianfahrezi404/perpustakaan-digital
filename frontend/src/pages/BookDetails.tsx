@@ -1,31 +1,88 @@
-import { useParams, Link } from 'react-router-dom';
-import { Star, Heart, BookOpen, Calendar, ChevronRight, ChevronLeft } from 'lucide-react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { Star, Heart, BookOpen, Calendar, ChevronRight, ChevronLeft, Loader2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { cn } from '../lib/utils';
+import api from '../lib/api';
+import { useAuth } from '../context/AuthContext';
+import toast from 'react-hot-toast';
+import type { Book, Review } from '../lib/types';
 
 export default function BookDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+  
+  const [book, setBook] = useState<Book | null>(null);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [recommendations, setRecommendations] = useState<Book[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const book = {
-    title: 'The Gilded Cage: A Novel of the French Court',
-    author: 'Eleanor Dubois',
-    rating: 4.8,
-    reviewsCount: 120,
-    pages: 352,
-    publishYear: 2023,
-    category: 'Fiksi Sejarah',
-    cover: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=600&h=900',
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const [bookRes, reviewsRes, recsRes] = await Promise.all([
+          api.get(`/books/${id}`),
+          api.get(`/books/${id}/reviews`),
+          api.get(`/books/${id}/recommendations`)
+        ]);
+        setBook(bookRes.data.data);
+        setReviews(reviewsRes.data.data);
+        setRecommendations(recsRes.data.data);
+      } catch (error) {
+        console.error('Failed to fetch book details:', error);
+        toast.error('Gagal memuat detail buku.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    if (id) fetchData();
+  }, [id]);
+
+  const handleBorrow = async () => {
+    if (!isAuthenticated) {
+      toast.error('Anda harus login terlebih dahulu.');
+      navigate('/login');
+      return;
+    }
+    
+    setIsSubmitting(true);
+    try {
+      await api.post(`/books/${id}/borrow`);
+      toast.success('Berhasil meminjam buku!');
+      navigate('/library');
+    } catch (error: any) {
+      const msg = error.response?.data?.message || 'Gagal meminjam buku.';
+      toast.error(msg);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const reviews = [
-    { id: 1, user: 'Anya Sharma', time: '2 hari yang lalu', text: 'The gilded cage is a... connecting translated... and their history...' },
-    { id: 2, user: 'Budi Santoso', time: '12 hari yang lalu', text: 'The gilded cage is writing summary about richard...' },
-  ];
+  const handleWishlist = async () => {
+    if (!isAuthenticated) {
+      toast.error('Anda harus login terlebih dahulu.');
+      navigate('/login');
+      return;
+    }
+    
+    try {
+      const res = await api.post(`/books/${id}/wishlist`);
+      toast.success(res.data.wishlisted ? 'Ditambahkan ke Keinginan' : 'Dihapus dari Keinginan');
+    } catch (error: any) {
+      toast.error('Gagal menyimpan ke keinginan.');
+    }
+  };
 
-  const recommendations = [
-    { id: 2, title: 'The Gilded Cage', author: 'Eleanor Dubois', cover: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=200&h=300' },
-    { id: 3, title: 'The Novel of the French Court', author: 'Eleanor Dubois', cover: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=200&h=300' },
-    { id: 4, title: 'A Novel of the Court', author: 'Eleanor Dubois', cover: 'https://images.unsplash.com/photo-1614544048536-0d28caf77f41?auto=format&fit=crop&q=80&w=200&h=300' },
-  ];
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-10 h-10 animate-spin text-primary" /></div>;
+  }
+
+  if (!book) {
+    return <div className="min-h-screen flex items-center justify-center text-xl text-muted-foreground">Buku tidak ditemukan.</div>;
+  }
 
   return (
     <div className="relative min-h-screen pb-16 overflow-hidden">
@@ -35,9 +92,7 @@ export default function BookDetails() {
           {/* Left Column: Cover & Reviews */}
           <div className="lg:col-span-4 flex flex-col gap-8">
             {/* Cover Image with large shadow */}
-            <div className="relative w-4/5 mx-auto lg:w-full max-w-sm">
-              <img src={book.cover} alt={book.title} className="w-full rounded-md shadow-[20px_20px_40px_rgba(0,0,0,0.15)] dark:shadow-[20px_20px_40px_rgba(0,0,0,0.5)] object-cover aspect-[2/3]" />
-            </div>
+              <img src={book.cover_url || 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=600&h=900'} alt={book.title} className="w-full rounded-md shadow-[20px_20px_40px_rgba(0,0,0,0.15)] dark:shadow-[20px_20px_40px_rgba(0,0,0,0.5)] object-cover aspect-[2/3]" />
 
             {/* Ulasan & Rating Section */}
             <div>
@@ -55,7 +110,7 @@ export default function BookDetails() {
                         <Star key={star} className={cn("w-4 h-4", star <= Math.floor(book.rating) ? "fill-current" : "text-muted")} />
                       ))}
                     </div>
-                    <span className="text-xs text-muted-foreground">Berdasarkan {book.reviewsCount} ulasan</span>
+                    <span className="text-xs text-muted-foreground">Berdasarkan {book.reviews_count} ulasan</span>
                   </div>
                   
                   {/* Rating Bars */}
@@ -88,14 +143,14 @@ export default function BookDetails() {
                   <div key={review.id} className="glass-card rounded-xl p-4 bg-white/60 dark:bg-card/60 backdrop-blur-md">
                     <div className="flex items-start gap-2 mb-2">
                       <div className="w-8 h-8 rounded-full bg-primary/20 flex-shrink-0 flex items-center justify-center font-bold text-primary text-xs">
-                        {review.user.charAt(0)}
+                        {review.user?.name?.charAt(0) || 'U'}
                       </div>
                       <div>
-                        <div className="text-xs font-bold text-foreground line-clamp-1">{review.user}</div>
-                        <div className="text-[10px] text-muted-foreground">{review.time}</div>
+                        <div className="text-xs font-bold text-foreground line-clamp-1">{review.user?.name || 'User'}</div>
+                        <div className="text-[10px] text-muted-foreground">{new Date(review.created_at).toLocaleDateString()}</div>
                       </div>
                     </div>
-                    <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed">{review.text}</p>
+                    <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed">{review.comment}</p>
                   </div>
                 ))}
               </div>
@@ -106,7 +161,7 @@ export default function BookDetails() {
           <div className="lg:col-span-8 flex flex-col pt-4 lg:pt-12">
             
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-serif mb-4 leading-tight text-foreground">
-              The Gilded Cage: A Novel<br/>of the French Court
+              {book.title}
             </h1>
             <p className="text-2xl text-[#b49a66] font-serif mb-8">{book.author}</p>
             
@@ -127,15 +182,22 @@ export default function BookDetails() {
               </div>
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
-                <span>Tahun Terbit: {book.publishYear}</span>
+                <span>Tahun Terbit: {book.publish_year}</span>
               </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-4 mb-16">
-              <Link to="/login" className="px-8 py-3.5 rounded-full bg-[#b49a66] text-white font-semibold hover:bg-[#9a8253] transition-all hover:scale-105 shadow-[0_8px_20px_rgba(180,154,102,0.3)]">
-                Pinjam Sekarang
-              </Link>
-              <button className="px-6 py-3.5 rounded-full text-foreground font-medium hover:bg-muted transition-colors flex items-center gap-2 group">
+              <button 
+                onClick={handleBorrow}
+                disabled={isSubmitting}
+                className="px-8 py-3.5 rounded-full bg-[#b49a66] text-white font-semibold hover:bg-[#9a8253] transition-all hover:scale-105 shadow-[0_8px_20px_rgba(180,154,102,0.3)] disabled:opacity-70 disabled:hover:scale-100 flex items-center justify-center"
+              >
+                {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Pinjam Sekarang'}
+              </button>
+              <button 
+                onClick={handleWishlist}
+                className="px-6 py-3.5 rounded-full text-foreground font-medium hover:bg-muted transition-colors flex items-center gap-2 group"
+              >
                 <Heart className="w-5 h-5 group-hover:fill-current group-hover:text-red-500 transition-colors" />
                 Simpan ke Keinginan
               </button>
@@ -154,7 +216,7 @@ export default function BookDetails() {
               <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                 {recommendations.map(rec => (
                   <Link key={rec.id} to={`/book/${rec.id}`} className="group glass-card rounded-2xl p-3 bg-white/60 dark:bg-card/60 backdrop-blur-md flex flex-col items-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                    <img src={rec.cover} alt={rec.title} className="w-full aspect-[2/3] object-cover rounded-xl shadow-md mb-4" />
+                    <img src={rec.cover_url || 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=200&h=300'} alt={rec.title} className="w-full aspect-[2/3] object-cover rounded-xl shadow-md mb-4" />
                     <h4 className="font-bold text-sm text-center line-clamp-2 leading-tight mb-1 group-hover:text-primary transition-colors">{rec.title}</h4>
                     <p className="text-xs text-muted-foreground text-center line-clamp-1">{rec.author}</p>
                   </Link>

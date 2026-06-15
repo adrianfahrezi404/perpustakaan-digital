@@ -1,6 +1,5 @@
 import { BookOpen, CheckCircle, Heart, Bookmark, Archive, Clock, MoreVertical, Search } from 'lucide-react';
 import { cn } from '../lib/utils';
-import { Link } from 'react-router-dom';
 
 const navItems = [
   { icon: BookOpen, label: 'Semua Buku', id: 'all' },

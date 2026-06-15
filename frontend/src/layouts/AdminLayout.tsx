@@ -1,5 +1,4 @@
 import { NavLink, Outlet } from 'react-router-dom';
-import { useTheme } from '../context/ThemeContext';
 import { Search, LayoutDashboard, Book, Users, Calendar, BarChart, Settings, User } from 'lucide-react';
 import { cn } from '../lib/utils';
 

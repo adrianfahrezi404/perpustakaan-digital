@@ -1,12 +1,19 @@
-import { useState } from 'react';
-
-const readingBooks = [
-  { id: 1, title: 'The Midnight Library', author: 'Matt Haig', status: 'Reading', progress: 65, cover: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=400&h=500' },
-  { id: 4, title: 'The Alchemist', author: 'Paulo Coelho', status: 'Reading', progress: 12, cover: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=400&h=500' },
-];
+import { useState, useEffect } from 'react';
+import { Loader2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import api from '../../lib/api';
 
 export default function LibraryReading() {
   const [activeSort, setActiveSort] = useState('Terbaru');
+  const [libraryBooks, setLibraryBooks] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    api.get('/library/reading')
+      .then(res => setLibraryBooks(res.data.data))
+      .catch(console.error)
+      .finally(() => setIsLoading(false));
+  }, []);
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -38,11 +45,18 @@ export default function LibraryReading() {
       </div>
 
       {/* Grid Buku */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
-        {readingBooks.map(book => (
-          <div key={book.id} className="group cursor-pointer">
-            <div className="relative aspect-[3/4] mb-5 rounded-md overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.15)] dark:shadow-[0_10px_30px_rgba(0,0,0,0.5)] transition-transform duration-500 group-hover:-translate-y-2 group-hover:shadow-[0_20px_40px_rgba(154,80,62,0.2)]">
-              <img src={book.cover} alt={book.title} className="w-full h-full object-cover" />
+      {isLoading ? (
+        <div className="flex justify-center py-20"><Loader2 className="w-10 h-10 animate-spin text-primary" /></div>
+      ) : libraryBooks.length === 0 ? (
+        <div className="text-center py-20 text-muted-foreground">Tidak ada buku yang sedang dibaca.</div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
+          {libraryBooks.map(item => {
+            const book = item.book;
+            return (
+              <Link key={item.id} to={`/book/${book.id}`} className="group cursor-pointer">
+                <div className="relative aspect-[3/4] mb-5 rounded-md overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.15)] dark:shadow-[0_10px_30px_rgba(0,0,0,0.5)] transition-transform duration-500 group-hover:-translate-y-2 group-hover:shadow-[0_20px_40px_rgba(154,80,62,0.2)]">
+                  <img src={book.cover_url || 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=400&h=500'} alt={book.title} className="w-full h-full object-cover" />
               
               {/* Badge */}
               <div className="absolute top-4 right-4">
@@ -56,19 +70,21 @@ export default function LibraryReading() {
               <h3 className="font-serif font-bold text-lg mb-1 group-hover:text-[#9a503e] dark:text-white transition-colors">{book.title}</h3>
               <p className="text-sm text-muted-foreground dark:text-gray-400 mb-4">{book.author}</p>
 
-              <div>
-                <div className="flex justify-between text-xs mb-1.5">
-                  <span className="text-muted-foreground dark:text-gray-400">Progress</span>
-                  <span className="font-bold text-[#9a503e] dark:text-[#f2b96f]">{book.progress}%</span>
-                </div>
-                <div className="w-full h-1 bg-black/10 dark:bg-white/10 rounded-full overflow-hidden">
-                  <div className="h-full bg-[#9a503e] transition-all duration-1000" style={{ width: `${book.progress}%` }}></div>
+                <div>
+                  <div className="flex justify-between text-xs mb-1.5">
+                    <span className="text-muted-foreground dark:text-gray-400">Progress</span>
+                    <span className="font-bold text-[#9a503e] dark:text-[#f2b96f]">{item.progress}%</span>
+                  </div>
+                  <div className="w-full h-1 bg-black/10 dark:bg-white/10 rounded-full overflow-hidden">
+                    <div className="h-full bg-[#9a503e] transition-all duration-1000" style={{ width: `${item.progress}%` }}></div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        ))}
+            </Link>
+          );
+        })}
       </div>
+      )}
     </div>
   );
 }

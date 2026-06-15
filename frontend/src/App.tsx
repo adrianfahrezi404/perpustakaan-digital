@@ -1,12 +1,15 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
+import { AuthProvider } from './context/AuthContext';
 import MainLayout from './layouts/MainLayout';
 import AdminLayout from './layouts/AdminLayout';
+import { Toaster } from 'react-hot-toast';
 
 import Landing from './pages/Landing';
 import BookDetails from './pages/BookDetails';
 import UserProfile from './pages/UserProfile';
 import Login from './pages/Login';
+import Register from './pages/Register';
 import Catalog from './pages/Catalog';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import CatalogManagement from './pages/admin/CatalogManagement';
@@ -26,7 +29,9 @@ import LibraryReading from './pages/library/LibraryReading';
 function App() {
   return (
     <ThemeProvider>
-      <Router>
+      <AuthProvider>
+        <Toaster position="top-center" />
+        <Router>
         <Routes>
           {/* Member Routes (Public/Standard) */}
           <Route path="/" element={<MainLayout />}>
@@ -34,6 +39,7 @@ function App() {
             <Route path="catalog" element={<Catalog />} />
             <Route path="book/:id" element={<BookDetails />} />
             <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
             <Route path="profile" element={<UserProfile />} />
           </Route>
 
@@ -58,6 +64,7 @@ function App() {
           </Route>
         </Routes>
       </Router>
+      </AuthProvider>
     </ThemeProvider>
   );
 }
