@@ -118,7 +118,7 @@ export default function AdminDashboard() {
               {popularBooks.map((book) => (
                 <div key={book.id} className="grid grid-cols-[1fr_auto] gap-4 p-4 items-center hover:bg-white/50 dark:hover:bg-white/5 transition-colors">
                   <div className="flex items-center gap-4">
-                    <img src={book.cover_url || 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=100&h=150'} alt={book.title} className="w-12 h-16 object-cover rounded shadow-sm" />
+                    <img src={book.cover_url || 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=100&h=150'} alt={book.title} className="h-16 w-auto max-w-[80px] object-contain rounded shadow-sm" />
                     <div>
                       <h4 className="font-semibold text-[#1a1a1a] dark:text-white line-clamp-1">{book.title}</h4>
                       <p className="text-xs text-muted-foreground dark:text-gray-400 mt-1">Status: {book.status}</p>

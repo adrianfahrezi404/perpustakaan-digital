@@ -17,9 +17,13 @@ export default function Login() {
     setIsSubmitting(true);
     
     try {
-      await login({ email, password });
+      const userData = await login({ email, password });
       toast.success('Login berhasil!');
-      navigate('/library');
+      if (userData?.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/library');
+      }
     } catch (error: any) {
       const msg = error.response?.data?.message || 'Gagal masuk. Periksa email dan kata sandi Anda.';
       toast.error(msg);

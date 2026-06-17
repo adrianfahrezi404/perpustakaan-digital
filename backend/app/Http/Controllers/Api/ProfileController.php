@@ -51,7 +51,7 @@ class ProfileController extends Controller
     public function uploadAvatar(Request $request): JsonResponse
     {
         $request->validate([
-            'avatar' => 'required|image|max:2048',
+            'avatar' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         $user = $request->user();

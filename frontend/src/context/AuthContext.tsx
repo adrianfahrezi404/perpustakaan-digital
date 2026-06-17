@@ -9,7 +9,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isAdmin: boolean;
   isLoading: boolean;
-  login: (credentials: LoginCredentials) => Promise<void>;
+  login: (credentials: LoginCredentials) => Promise<any>;
   register: (data: RegisterData) => Promise<void>;
   logout: () => Promise<void>;
   fetchUser: () => Promise<void>;
@@ -56,8 +56,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const login = useCallback(async (credentials: LoginCredentials) => {
     await getCsrfCookie();
     await api.post('/auth/login', credentials);
-    await fetchUser();
-  }, [fetchUser]);
+    const { data } = await api.get<{ data: User }>('/auth/user');
+    setUser(data.data);
+    setIsLoading(false);
+    return data.data;
+  }, []);
 
   /**
    * Register a new member account.

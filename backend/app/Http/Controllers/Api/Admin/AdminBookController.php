@@ -45,7 +45,8 @@ class AdminBookController extends Controller
             'publish_year' => 'nullable|integer|min:1900|max:2030',
             'publisher' => 'nullable|string|max:255',
             'price' => 'required|numeric|min:0',
-            'cover' => 'nullable|image|max:2048',
+            'cover' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'cover_link' => 'nullable|url|max:2048',
             'pdf_file' => 'nullable|mimes:pdf|max:20480',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id',
@@ -53,7 +54,10 @@ class AdminBookController extends Controller
 
         if ($request->hasFile('cover')) {
             $validated['cover'] = $request->file('cover')->store('covers', 'public');
+        } elseif (!empty($validated['cover_link'])) {
+            $validated['cover'] = $validated['cover_link'];
         }
+        unset($validated['cover_link']);
 
         if ($request->hasFile('pdf_file')) {
             $validated['pdf_file'] = $request->file('pdf_file')->store('books', 'public');
@@ -92,7 +96,8 @@ class AdminBookController extends Controller
             'publish_year' => 'nullable|integer|min:1900|max:2030',
             'publisher' => 'nullable|string|max:255',
             'price' => 'sometimes|numeric|min:0',
-            'cover' => 'nullable|image|max:2048',
+            'cover' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'cover_link' => 'nullable|url|max:2048',
             'pdf_file' => 'nullable|mimes:pdf|max:20480',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tags,id',
@@ -103,7 +108,13 @@ class AdminBookController extends Controller
                 Storage::disk('public')->delete($book->cover);
             }
             $validated['cover'] = $request->file('cover')->store('covers', 'public');
+        } elseif (!empty($validated['cover_link'])) {
+            if ($book->cover && !str_starts_with($book->cover, 'http')) {
+                Storage::disk('public')->delete($book->cover);
+            }
+            $validated['cover'] = $validated['cover_link'];
         }
+        unset($validated['cover_link']);
 
         if ($request->hasFile('pdf_file')) {
             if ($book->pdf_file) {

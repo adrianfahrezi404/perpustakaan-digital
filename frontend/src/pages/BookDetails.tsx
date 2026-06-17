@@ -92,7 +92,7 @@ export default function BookDetails() {
           {/* Left Column: Cover & Reviews */}
           <div className="lg:col-span-4 flex flex-col gap-8">
             {/* Cover Image with large shadow */}
-              <img src={book.cover_url || 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=600&h=900'} alt={book.title} className="w-full rounded-md shadow-[20px_20px_40px_rgba(0,0,0,0.15)] dark:shadow-[20px_20px_40px_rgba(0,0,0,0.5)] object-cover aspect-[2/3]" />
+              <img src={book.cover_url || 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=600&h=900'} alt={book.title} className="w-full rounded-md shadow-[20px_20px_40px_rgba(0,0,0,0.15)] dark:shadow-[20px_20px_40px_rgba(0,0,0,0.5)] object-contain aspect-[2/3] bg-gray-100/50 dark:bg-white/5" />
 
             {/* Ulasan & Rating Section */}
             <div>
@@ -216,7 +216,7 @@ export default function BookDetails() {
               <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                 {recommendations.map(rec => (
                   <Link key={rec.id} to={`/book/${rec.id}`} className="group glass-card rounded-2xl p-3 bg-white/60 dark:bg-card/60 backdrop-blur-md flex flex-col items-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                    <img src={rec.cover_url || 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=200&h=300'} alt={rec.title} className="w-full aspect-[2/3] object-cover rounded-xl shadow-md mb-4" />
+                    <img src={rec.cover_url || 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=200&h=300'} alt={rec.title} className="w-full aspect-[2/3] object-contain rounded-xl shadow-md mb-4 bg-gray-100/50 dark:bg-white/5" />
                     <h4 className="font-bold text-sm text-center line-clamp-2 leading-tight mb-1 group-hover:text-primary transition-colors">{rec.title}</h4>
                     <p className="text-xs text-muted-foreground text-center line-clamp-1">{rec.author}</p>
                   </Link>

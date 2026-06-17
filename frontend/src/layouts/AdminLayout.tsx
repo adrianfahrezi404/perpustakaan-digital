@@ -1,8 +1,9 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, Link, useSearchParams } from 'react-router-dom';
 import { Search, LayoutDashboard, Book, Users, Calendar, BarChart, Settings, User } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 export default function AdminLayout() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const menuItems = [
     { name: 'Dashboard', path: '/admin', icon: LayoutDashboard, end: true },
     { name: 'Manajemen Buku', path: '/admin/books', icon: Book },
@@ -58,6 +59,17 @@ export default function AdminLayout() {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <input 
                 type="text" 
+                value={searchParams.get('q') || ''}
+                onChange={e => {
+                  setSearchParams(prev => {
+                    if (e.target.value) {
+                      prev.set('q', e.target.value);
+                    } else {
+                      prev.delete('q');
+                    }
+                    return prev;
+                  }, { replace: true });
+                }}
                 placeholder="Cari buku, anggota, atau transaksi..." 
                 className="w-full pl-12 pr-4 py-3 rounded-xl border border-[#e8dac5] dark:border-white/10 bg-white dark:bg-white/5 focus:border-[#9a503e] focus:ring-1 focus:ring-[#9a503e] text-sm outline-none transition-all"
               />
@@ -66,9 +78,11 @@ export default function AdminLayout() {
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-3 text-sm">
                 <span className="font-semibold text-foreground">Administrator</span>
-                <div className="w-10 h-10 rounded-full bg-[#f2e6db] border border-[#e8dac5] flex items-center justify-center overflow-hidden">
-                  <User className="w-6 h-6 text-[#9a503e]" />
-                </div>
+                <Link to="/profile">
+                  <div className="w-10 h-10 rounded-full bg-[#f2e6db] border border-[#e8dac5] flex items-center justify-center overflow-hidden cursor-pointer hover:border-[#9a503e] transition-colors">
+                    <User className="w-6 h-6 text-[#9a503e]" />
+                  </div>
+                </Link>
               </div>
             </div>
           </div>

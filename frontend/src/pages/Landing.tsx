@@ -73,7 +73,7 @@ export default function Landing() {
             <Link key={book.id} to={`/book/${book.id}`} className="group">
               <div className="glass-card rounded-2xl p-4 transition-transform duration-300 group-hover:-translate-y-2">
                 <div className="aspect-[2/3] rounded-xl overflow-hidden mb-4 relative">
-                  <img src={book.cover_url || 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=400&h=600'} alt={book.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                  <img src={book.cover_url || 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=400&h=600'} alt={book.title} className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110" />
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                     <span className="text-white font-medium bg-primary/80 px-4 py-2 rounded-full backdrop-blur-sm">Lihat Detail</span>
                   </div>

@@ -1,10 +1,12 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
 import { Moon, Sun, Bell, Search, LayoutGrid, BookOpen, CheckCircle, Heart, Bookmark, Archive, Settings, HelpCircle, Plus } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 export default function LibraryLayout() {
   const { theme, toggleTheme } = useTheme();
+  const { user } = useAuth();
 
   const menuItems = [
     { name: 'Semua Buku', path: '/library', icon: LayoutGrid, end: true },
@@ -94,7 +96,15 @@ export default function LibraryLayout() {
                 <Bell className="w-5 h-5" />
                 <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-[#fcf9f2] dark:border-[#121212]"></span>
               </button>
-              <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=150&h=150" alt="Profile" className="w-9 h-9 rounded-full object-cover border-2 border-transparent hover:border-[#9a503e] transition-colors cursor-pointer" />
+              <Link to="/profile">
+                {user?.avatar_url ? (
+                  <img src={user.avatar_url} alt="Profile" className="w-9 h-9 rounded-full object-cover border-2 border-transparent hover:border-[#9a503e] transition-colors cursor-pointer" />
+                ) : (
+                  <div className="w-9 h-9 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-sm border-2 border-transparent hover:border-[#9a503e] transition-colors cursor-pointer">
+                    {user?.name?.charAt(0) || 'U'}
+                  </div>
+                )}
+              </Link>
             </div>
           </div>
         </header>

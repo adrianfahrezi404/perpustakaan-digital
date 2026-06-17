@@ -27,7 +27,12 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
   // For file uploads, let the browser set Content-Type with boundary
   if (config.data instanceof FormData) {
-    delete config.headers['Content-Type'];
+    if (config.headers && typeof config.headers.delete === 'function') {
+      config.headers.delete('Content-Type');
+      config.headers.delete('Accept');
+    } else if (config.headers) {
+      delete config.headers['Content-Type'];
+    }
   }
   return config;
 });
