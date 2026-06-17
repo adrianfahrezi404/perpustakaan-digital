@@ -12,10 +12,11 @@ Sistem Informasi Perpustakaan Digital modern yang mengusung tema **Warm-Elegant*
 
 ### ⚙️ Dashboard Admin (Administrator)
 - **Tinjauan Statistik**: Panel interaktif (*Area Charts* berbasis data) untuk memantau tren peminjaman dan pendapatan secara *real-time*.
-- **Manajemen Buku Terpadu**: CRUD visual (*Tambah, Edit, Hapus*) dengan tampilan sampul buku yang proporsional.
+- **Manajemen Buku Terpadu**: CRUD visual (*Tambah, Edit, Hapus*) di Manajemen Katalog dengan dukungan *upload cover* buku (melalui file lokal atau URL eksternal).
+- **Pencarian Global Real-time (Live Search)**: Fitur pencarian pintar berbasis *debounce* di Topbar yang secara otomatis memfilter buku (judul, penulis, atau ISBN) di berbagai halaman tanpa perlu memuat ulang halaman atau menekan tombol Enter.
+- **Smart Image Scaling**: Menampilkan bentuk asli sampul buku (*landscape* maupun *portrait*) secara rapi (*object-contain*) tanpa ada bagian gambar yang gepeng (*squished*) atau terpotong (*cropped*).
 - **Pengelolaan Anggota & Peminjaman**: Pelacakan status anggota (Aktif/Tidak Aktif) dan status peminjaman (Dipinjam/Terlambat/Kembali) secara instan dengan *Badge* warna informatif.
-- **Pengaturan Sistem**: Konfigurasi profil perpustakaan, keamanan, hingga aturan durasi peminjaman.
-- **Konfirmasi Keamanan (UX)**: Setiap aksi krusial seperti menghapus data atau menyimpan pengaturan dilindungi dengan animasi modal (Pop-up) persetujuan dan notifikasi keberhasilan (*Toast*).
+- **Konfirmasi Keamanan & UX Modern**: Menggantikan *alert native browser* yang kaku dengan animasi **Modal Konfirmasi** khusus (misalnya saat menyimpan/menghapus buku atau menonaktifkan member) serta **Notifikasi Toast** (Berhasil/Gagal) yang tampil secara dinamis.
 
 ## 🛠️ Tech Stack (Teknologi yang Digunakan)
 
@@ -91,7 +92,12 @@ Pastikan Anda sudah menginstal **Node.js**, **PHP 8.3+**, **Composer**, dan **Po
 - [x] **Fase 1: Desain Frontend UI/UX (Selesai)**
 - [x] **Fase 2: Pembuatan Backend & REST API (Selesai)**
 - [x] **Fase 3: Autentikasi Keamanan & Integrasi API (Selesai)**
-- [ ] **Fase 4: Integrasi Halaman Frontend dengan Backend API (In Progress)**
+- [x] **Fase 4: Integrasi Halaman Frontend dengan Backend API (Selesai)**
+- [ ] **Fase 5: Sistem Peminjaman & Pengembalian (Loan Management)**
+- [ ] **Fase 6: Halaman Profil Anggota & Histori Peminjaman (Member Area)**
+- [ ] **Fase 7: Integrasi Pembaca PDF (Web PDF Reader)**
+- [ ] **Fase 8: Fitur Interaksi (Ulasan, Rating & Sistem Notifikasi)**
+- [ ] **Fase 9: Ekspor Laporan Data (PDF/Excel) untuk Admin**
 
 <br/>
 <div align="center">
